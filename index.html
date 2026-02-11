@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Churn Predictor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">🤖 Customer Churn Predictor</div>
+    </header>
+
+    <div class="container">
+
+        <div class="form-section">
+            <h2>Enter Customer Details</h2>
+
+            <form id="churnForm">
+
+                <input type="number" placeholder="Age" id="Age" required>
+                <input type="number" placeholder="Tenure (Months)" id="Tenure_Months" required>
+                <input type="number" step="0.01" placeholder="Monthly Charges" id="Monthly_Charges" required>
+
+                <select id="Internet_Service" required>
+                    <option value="">Internet Service</option>
+                    <option value="Fiber optic">Fiber optic</option>
+                    <option value="DSL">DSL</option>
+                    <option value="No">No</option>
+                </select>
+
+                <select id="Contract_Type" required>
+                    <option value="">Contract Type</option>
+                    <option value="Month-to-month">Month-to-month</option>
+                    <option value="One year">One year</option>
+                    <option value="Two year">Two year</option>
+                </select>
+
+                <select id="Payment_Method" required>
+                    <option value="">Payment Method</option>
+                    <option value="Electronic check">Electronic check</option>
+                    <option value="Mailed check">Mailed check</option>
+                    <option value="Bank transfer">Bank transfer</option>
+                    <option value="Credit card">Credit card</option>
+                </select>
+
+                <select id="Gender" required>
+                    <option value="">Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+
+                <select id="Tech_Support" required>
+                    <option value="">Tech Support</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <button type="submit">Make Prediction</button>
+            </form>
+
+            <div id="result"></div>
+        </div>
+
+        <div class="illustration">
+            <img src="https://cdn-icons-png.flaticon.com/512/3039/3039430.png" alt="Illustration">
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
