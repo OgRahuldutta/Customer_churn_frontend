@@ -1,4 +1,5 @@
-const BACKEND_URL = "https://ograhul-customer-care-churn-backend.hf.space/predict";
+const BACKEND_URL = "https://ograhul-cusomer-care-churn-backend.hf.space/predict";
+
 
 document.getElementById("churnForm").addEventListener("submit", async function(e) {
     e.preventDefault();
