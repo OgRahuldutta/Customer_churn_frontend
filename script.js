@@ -1,10 +1,7 @@
-const BACKEND_URL = "https://ograhul-cusomer-care-churn-backend.hf.space/predict";
+const BACKEND_URL = "https://ograhaul-cusomer-care-churn-backend.hf.space/predict";
 
 document.getElementById("churnForm").addEventListener("submit", async function(e) {
     e.preventDefault();
-
-    const resultDiv = document.getElementById("result");
-    resultDiv.innerHTML = "🔄 Predicting...";
 
     const data = {
         Age: parseInt(document.getElementById("Age").value),
@@ -17,43 +14,53 @@ document.getElementById("churnForm").addEventListener("submit", async function(e
         Tech_Support: document.getElementById("Tech_Support").value
     };
 
+    const resultBox = document.getElementById("result");
+    resultBox.innerHTML = "🔄 Predicting...";
+
     try {
         const response = await fetch(BACKEND_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify(data)
         });
 
-        if (!response.ok) throw new Error("Server error");
-
         const result = await response.json();
 
-        const probability = (result.probability * 100).toFixed(2);
+        if (result.prediction) {
 
-        const riskLevel =
-            probability > 70 ? "High Risk" :
-            probability > 40 ? "Medium Risk" :
-            "Low Risk";
+            const probabilityPercent = (result.probability * 100).toFixed(2);
+            const confidencePercent = (result.confidence * 100).toFixed(2);
 
-        const color = result.prediction === "Yes" ? "red" : "green";
+            let riskColor;
+            if (result.risk_level === "Low") {
+                riskColor = "#28a745";
+            } else if (result.risk_level === "Medium") {
+                riskColor = "#ffc107";
+            } else {
+                riskColor = "#dc3545";
+            }
 
-        resultDiv.innerHTML = `
-            <div style="color:${color}; font-size:22px; font-weight:bold;">
-                ${result.prediction === "Yes" ? "⚠ Likely to Churn" : "✅ Likely to Stay"}
-            </div>
-            <div style="margin-top:8px;">
-                Confidence: ${probability}%
-            </div>
-            <div class="progress">
-                <div class="progress-bar" style="width:${probability}%; background:${color};"></div>
-            </div>
-            <div style="margin-top:6px;">
-                ${riskLevel}
-            </div>
-        `;
+            resultBox.innerHTML = `
+                <div class="result-card">
+                    <h2>Prediction Result</h2>
+                    <p><strong>Customer Status:</strong> ${result.prediction}</p>
+                    <p><strong>Churn Probability:</strong> ${probabilityPercent}%</p>
+                    <p><strong>Risk Level:</strong> 
+                        <span style="color:${riskColor}; font-weight:bold;">
+                            ${result.risk_level}
+                        </span>
+                    </p>
+                    <p><strong>Confidence:</strong> ${confidencePercent}%</p>
+                    <p class="model-version">Model v${result.model_version}</p>
+                </div>
+            `;
+        } else {
+            resultBox.innerHTML = "⚠️ Error occurred";
+        }
 
     } catch (error) {
-        console.error(error);
-        resultDiv.innerHTML = "❌ Backend not reachable";
+        resultBox.innerHTML = "❌ Backend not reachable";
     }
 });
