@@ -1,6 +1,5 @@
 const BACKEND_URL = "https://ograhul-customer-care-churn-backend.hf.space/predict";
 
-
 document.getElementById("churnForm").addEventListener("submit", async function(e) {
     e.preventDefault();
 
@@ -27,12 +26,15 @@ document.getElementById("churnForm").addEventListener("submit", async function(e
             body: JSON.stringify(data)
         });
 
+        if (!response.ok) {
+            throw new Error("Server error");
+        }
+
         const result = await response.json();
 
         if (result.prediction) {
 
             const probabilityPercent = (result.probability * 100).toFixed(2);
-            const confidencePercent = (result.confidence * 100).toFixed(2);
 
             let riskColor;
             if (result.risk_level === "Low") {
@@ -53,15 +55,14 @@ document.getElementById("churnForm").addEventListener("submit", async function(e
                             ${result.risk_level}
                         </span>
                     </p>
-                    <p><strong>Confidence:</strong> ${confidencePercent}%</p>
-                    <p class="model-version">Model v${result.model_version}</p>
                 </div>
             `;
         } else {
-            resultBox.innerHTML = "⚠️ Error occurred";
+            resultBox.innerHTML = "⚠️ Unexpected response from backend";
         }
 
     } catch (error) {
+        console.error(error);
         resultBox.innerHTML = "❌ Backend not reachable";
     }
 });
