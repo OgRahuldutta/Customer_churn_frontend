@@ -1,13 +1,12 @@
 const BACKEND_URL = "https://ograhul-cusomer-care-churn-backend.hf.space/predict";
 
-
-document.getElementById("churnForm").addEventListener("submit", async function(e) {
+document.getElementById("churnForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const data = {
-        Age: parseInt(document.getElementById("Age").value),
-        Tenure_Months: parseInt(document.getElementById("Tenure_Months").value),
-        Monthly_Charges: parseFloat(document.getElementById("Monthly_Charges").value),
+        Age: Number(document.getElementById("Age").value),
+        Tenure_Months: Number(document.getElementById("Tenure_Months").value),
+        Monthly_Charges: Number(document.getElementById("Monthly_Charges").value),
         Internet_Service: document.getElementById("Internet_Service").value,
         Contract_Type: document.getElementById("Contract_Type").value,
         Payment_Method: document.getElementById("Payment_Method").value,
@@ -28,22 +27,22 @@ document.getElementById("churnForm").addEventListener("submit", async function(e
         });
 
         if (!response.ok) {
-            throw new Error("Server error");
+            const text = await response.text();
+            throw new Error("Server error: " + text);
         }
 
         const result = await response.json();
 
-        if (result.prediction) {
+        // ✅ Correct check
+        if (result.hasOwnProperty("prediction")) {
 
             const probabilityPercent = (result.probability * 100).toFixed(2);
 
-            let riskColor;
+            let riskColor = "#dc3545";
             if (result.risk_level === "Low") {
                 riskColor = "#28a745";
             } else if (result.risk_level === "Medium") {
                 riskColor = "#ffc107";
-            } else {
-                riskColor = "#dc3545";
             }
 
             resultBox.innerHTML = `
@@ -59,11 +58,11 @@ document.getElementById("churnForm").addEventListener("submit", async function(e
                 </div>
             `;
         } else {
-            resultBox.innerHTML = "⚠️ Unexpected response from backend";
+            resultBox.innerHTML = "⚠️ Invalid response format";
         }
 
     } catch (error) {
-        console.error(error);
+        console.error("Fetch error:", error);
         resultBox.innerHTML = "❌ Backend not reachable";
     }
 });
